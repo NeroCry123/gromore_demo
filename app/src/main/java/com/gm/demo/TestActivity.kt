@@ -15,6 +15,7 @@ import com.bytedance.sdk.openadsdk.CSJAdError
 import com.bytedance.sdk.openadsdk.CSJSplashAd
 import com.bytedance.sdk.openadsdk.TTAdConfig
 import com.bytedance.sdk.openadsdk.TTAdConstant
+import com.bytedance.sdk.openadsdk.TTAdDislike
 import com.bytedance.sdk.openadsdk.TTAdNative
 import com.bytedance.sdk.openadsdk.TTAdNative.CSJSplashAdListener
 import com.bytedance.sdk.openadsdk.TTAdNative.NativeExpressAdListener
@@ -449,33 +450,20 @@ class TestActivity : Activity() {
             val viewGroup = findViewById<ViewGroup>(R.id.layout_ad_container)
             viewGroup.removeAllViews()
             viewGroup.addView(expressAdView)
-
-            //设置之后，点击关闭就不会弹出反馈窗口（一闪而过）
-            ttNativeExpressAd.setDislikeDialog(object : TTDislikeDialogAbstract(this) {
-
-                override fun onCreate(p0: Bundle?) {
-                    super.onCreate(p0)
-                    //监听弹出的时候关闭它
-                    setOnShowListener {
-                        dismiss()
-                    }
+            val dislikeDialog = ttNativeExpressAd.getDislikeDialog(this)
+            dislikeDialog.setDislikeInteractionCallback(object :  TTAdDislike.DislikeInteractionCallback {
+                override fun onShow() {
+                    dislikeDialog.resetDislikeStatus()
                     //如果需要删除view，可以在这里调用（可选）
                     viewGroup.removeView(expressAdView)
                 }
 
-                override fun getLayoutId(): Int {
-                    Log.i(tag, "setDislikeDialog getLayoutId")
-                    return 0
+                override fun onSelected(p0: Int, p1: String?, p2: Boolean) {
+                    
                 }
 
-                override fun getTTDislikeListViewIds(): IntArray {
-                    Log.i(tag, "setDislikeDialog getTTDislikeListViewIds")
-                    return intArrayOf()
-                }
-
-                override fun getLayoutParams(): ViewGroup.LayoutParams? {
-                    Log.i(tag, "setDislikeDialog getLayoutParams")
-                    return null
+                override fun onCancel() {
+                    
                 }
 
             })
