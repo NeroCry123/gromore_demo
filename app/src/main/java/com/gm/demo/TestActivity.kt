@@ -109,12 +109,16 @@ class TestActivity : Activity() {
         TTAdSdk.start(object : TTAdSdk.Callback {
             override fun success() {
                 Log.i(tag, "初始化-成功")
-                Toast.makeText(context, "初始化-成功", Toast.LENGTH_SHORT).show()
+                this@TestActivity.runOnUiThread {
+                    Toast.makeText(context, "初始化-成功", Toast.LENGTH_SHORT).show()
+                }
             }
 
             override fun fail(code: Int, msg: String?) {
                 Log.i(tag, "初始化-失败，msg = $msg")
-                Toast.makeText(context, "初始化-失败，msg = $msg", Toast.LENGTH_SHORT).show()
+                this@TestActivity.runOnUiThread {
+                    Toast.makeText(context, "初始化-失败，msg = $msg", Toast.LENGTH_SHORT).show()
+                }
             }
         })
     }
